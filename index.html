@@ -1,0 +1,56 @@
+<!doctype html>
+<head>
+<title>Hash</title>
+<meta name="viewport" content="width=device-width">
+<meta charset="utf-8">
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha1.js"></script>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+<style>
+body {
+  font-size: 18px;
+  padding: 1em;
+}
+input {
+  display: block;
+  font-family: monospace;
+  margin: auto;
+  max-width: 100%;
+}
+</style>
+<body>
+<form>
+<input type="text" size="28" autofocus spellcheck="false">
+</form>
+<pre></pre>
+<script>
+function hash(s) {
+  function mapchar(c) {
+    return { '+': '-', '/': '_', '=': '' }[c];
+  }
+  return CryptoJS.SHA1(s).toString(CryptoJS.enc.Base64)
+    .replace(/\W/g, mapchar);
+}
+function rehash(s) {
+  while(true) {
+    s = hash(s);
+    if ([/[A-Z]/, /[a-z]/, /[0-9]/, /[-_]/]
+        .every(function(p) { return p.test(s); })) {
+      return s;
+    }
+  }
+}
+
+var form = document.querySelector('form');
+var text = document.querySelector('input');
+form.addEventListener('submit', function(e) {
+  text.value = rehash(text.value);
+  text.select();
+  var id = setTimeout(function() {
+    text.value = '';
+  }, 5000);
+  text.addEventListener('input', function() {
+    clearTimeout(id);
+  });
+  e.preventDefault();
+});
+</script>
