@@ -21,7 +21,6 @@ input {
 <form>
 <input type="text" size="28" autofocus spellcheck="false">
 </form>
-<pre></pre>
 <script>
 function hash(s) {
   function mapchar(c) {
@@ -43,14 +42,15 @@ function rehash(s) {
 var form = document.querySelector('form');
 var text = document.querySelector('input');
 form.addEventListener('submit', function(e) {
-  text.value = rehash(text.value);
+  var value = rehash(text.value);
+  text.value = value;
   text.select();
-  var id = setTimeout(function() {
-    text.value = '';
-  }, 5000);
-  text.addEventListener('input', function() {
-    clearTimeout(id);
-  });
   e.preventDefault();
+
+  setTimeout(function() {
+    if (text.value == value) {
+      text.value = '';
+    }
+  }, 10000);
 });
 </script>
