@@ -29,7 +29,14 @@ function hash(s) {
   return CryptoJS.SHA1(s).toString(CryptoJS.enc.Base64)
     .replace(/\W/g, mapchar);
 }
+
 function rehash(s) {
+  var c = {
+            'Lrgr5dPAmwYANCcS6Vq4kG9D9RM': { salt: 1 }
+          }[hash('config:' + s)] || {};
+  if (c.salt) {
+    s += '+salt:' + c.salt;
+  }
   while(true) {
     s = hash(s);
     if ([/[A-Z]/, /[a-z]/, /[0-9]/, /[-_]/]
