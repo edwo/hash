@@ -43,16 +43,14 @@ function sha(s) {
 }
 
 function shorthash(text, pass, seed, length) {
-  var salt = sha(text + pass + seed);
-  var hash = text;
-  var short;
+  var hash = sha(text + pass + seed);
   while (true) {
-    hash = sha(hash + salt);
-    short = hash.substr(0, length);
+    var short = hash.substr(0, length);
     if ([/[A-Z]/, /[a-z]/, /[0-9]/, /[-_]/]
         .every(function(re) { return re.test(short); })) {
       return short;
     }
+    hash = sha(hash + pass);
   }
 }
 </script>
@@ -74,18 +72,20 @@ input {
 <input type="password" spellcheck="false" autofocus>
 </form>
 <script>
-var form = document.querySelector('form');
-var input = document.querySelector('input');
-var pass;
-form.addEventListener('submit', function(e) {
-  if (input.type == 'password') {
-    pass = input.value;
-    input.value = '';
-    input.type = 'text';
-  } else {
-    input.value = shorthash(input.value, pass, 0, 18);
-    input.select();
-  }
-  e.preventDefault();
-});
+(function() {
+  var form = document.querySelector('form');
+  var input = document.querySelector('input');
+  var pass;
+  form.addEventListener('submit', function(e) {
+    if (input.type == 'password') {
+      pass = input.value;
+      input.value = '';
+      input.type = 'text';
+    } else {
+      input.value = shorthash(input.value, pass, 0, 18);
+      input.select();
+    }
+    e.preventDefault();
+  });
+})();
 </script>
