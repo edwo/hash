@@ -82,7 +82,12 @@ input {
       input.value = '';
       input.type = 'text';
     } else {
-      input.value = shorthash(input.value, pass, 0, 18);
+      var text = input.value;
+      var conf = { 'eQ1lMQlw': { length: 16 }
+                 }[sha(text + pass).substr(0, 8)];
+      var seed = conf && conf.seed ? conf.seed : 0;
+      var length = conf && conf.length ? conf.length : 18;
+      input.value = shorthash(text, pass, seed, length);
       input.select();
     }
     e.preventDefault();
