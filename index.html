@@ -53,16 +53,41 @@ function shorthash(text, pass, seed, length) {
     hash = sha(hash + pass);
   }
 }
+
+function randomphrase(seed) {
+  var hash;
+  function random() {
+    hash = CryptoJS.SHA512((hash || '') + seed);
+    return parseInt(hash.toString().substr(0, 13), 16) / 4503599627370496;
+  }
+
+  var animals = ['ant', 'bear', 'cat', 'dog', 'elephant', 'frog', 'goat',
+                 'horse', 'iguana', 'jellyfish', 'koala', 'lamb', 'mouse',
+                 'newt', 'otter', 'pig', 'quail', 'rat', 'sheep', 'tiger',
+                 'unicorn', 'vulture', 'wolf', 'yak', 'zebra'];
+  var actions = ['avoiding', 'burning', 'courting', 'drawing', 'eating',
+                 'feeding', 'gawking', 'holding', 'inviting', 'joining',
+                 'kicking', 'licking', 'meeting', 'nuking', 'ordering',
+                 'pulling', 'releasing', 'shaking', 'throwing', 'using',
+                 'visiting', 'watching'];
+
+  function pick(list) {
+    return list[Math.floor(random() * list.length)];
+  }
+
+  return [pick(animals), pick(actions), pick(animals)].join(' ');
+}
 </script>
 <style>
 body {
-  padding: 18px;
-}
-input {
-  display: block;
   font-family: monospace;
   font-size: 18px;
-  margin: auto;
+  margin: 24px 12px;
+  text-align: center;
+}
+input {
+  font-family: inherit;
+  font-size: inherit;
   max-width: 100%;
   width: 18em;
 }
@@ -71,6 +96,7 @@ input {
 <form>
 <input type="password" spellcheck="false" autofocus>
 </form>
+<p></p>
 <script>
 (function() {
   var form = document.querySelector('form');
@@ -81,6 +107,7 @@ input {
       pass = input.value;
       input.value = '';
       input.type = 'text';
+      document.querySelector('p').textContent = randomphrase(pass);
     } else {
       var text = input.value;
       var conf = { 'eQ1l': { length: 16 }
